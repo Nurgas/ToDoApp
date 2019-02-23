@@ -1,8 +1,17 @@
 package kg.nurga.todoapp;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity
+
 public class Task implements Serializable {
+
+    @PrimaryKey(autoGenerate = true)
+    int id;
+
     String title;
 
     String description;
@@ -25,7 +34,8 @@ public class Task implements Serializable {
 
     }
 
-    public Task(String title, long time, long createdTime) {
+    public Task(String title, long time, long createdTime, int id) {
+        this.id = id;
         this.title = title;
         this.time = time;
         this.createdTime = createdTime;
@@ -63,6 +73,12 @@ public class Task implements Serializable {
         this.done = done;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }
 

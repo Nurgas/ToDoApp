@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".TutorialAvtivity">
+    tools:context=".TutorialActivity">
 
 
     <android.support.v4.view.ViewPager
@@ -37,7 +37,7 @@
         android:layout_width="100dp"
         android:layout_height="30dp"
         app:stpi_stepCount="5"
-        app:stpi_circleRadius="5dp"
+        app:stpi_circleRadius="7dp"
         app:stpi_showDoneIcon="false"
         app:stpi_lineStrokeWidth="0dp"
         app:stpi_lineColor="#FFF"
@@ -45,8 +45,25 @@
         app:stpi_indicatorColor="#2196F3"
         app:layout_constraintTop_toTopOf="@+id/next_btn"
         app:layout_constraintBottom_toBottomOf="@+id/next_btn"
+        app:layout_constraintLeft_toRightOf="@+id/next_skip"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/next_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="SKIP"
+        android:textColor="#2196F3"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="@+id/next_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/next_btn"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="10dp"/>
+        android:background="?actionBarItemBackground"
+        android:textStyle="bold"
+        android:padding="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

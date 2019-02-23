@@ -11,7 +11,12 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
+    public interface ClickListener {
+        void onCLick(int pos);
+    }
+    private ClickListener listener;
     private List<Task> list;
+
     public TaskAdapter(List<Task> list) {
         this.list = list;
     }
@@ -28,7 +33,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         Task task = list.get(i);
         myViewHolder.mTextTitle.setText(task.getTitle());
         myViewHolder.mTextDesc.setText(task.getDescription());
-
     }
 
     @Override
@@ -36,11 +40,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         return list.size();
     }
 
+    public void setListener(ClickListener listener) {
+        this.listener = listener;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTextTitle;
         TextView mTextDesc;
         TextView mTextCreatedTime;
-
 
         public MyViewHolder(@NonNull View itemView) {
 
@@ -49,6 +56,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             mTextTitle = itemView.findViewById(R.id.textTitle);
             mTextDesc = itemView.findViewById(R.id.textDesc);
             mTextCreatedTime = itemView.findViewById(R.id.textCreatedTime);
+            itemView.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    listener.onCLick(getAdapterPosition());
+
+                }
+            });
         }
     }
 }

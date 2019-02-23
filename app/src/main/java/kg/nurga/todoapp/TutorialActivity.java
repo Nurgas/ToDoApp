@@ -1,6 +1,5 @@
 package kg.nurga.todoapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -15,55 +14,65 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.badoualy.stepperindicator.StepperIndicator;
 
-public class TutorialAvtivity extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-
     private ViewPager mViewPager;
+
     private StepperIndicator mStepperIndicator;
-    private TextView nextBtn;
 
-    SharedPreferences mSharedPreferences;
+    private TextView nextBtn, skipBtn;
 
+    private SharedPreferences mSharedPreferences;
 
-
-
-
+    private static String PREF_FIRST_LAUNCH = "first_launch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial_avtivity);
-        mStepperIndicator = findViewById(R.id.intro_stepper);
-
-        nextBtn = findViewById(R.id.next_btn);
         mSharedPreferences = getSharedPreferences("setting", MODE_PRIVATE);
-
-
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        if(isFirstLaunch()) {
+            setContentView(R.layout.activity_tutorial_avtivity);
+            firstLaunch();
+            init();
 
+        } else {
+            MainActivity.start(this);
+            finish();
+        }
+    }
+
+
+    private void init(){
+        initViewPager();
+        nextBtn = findViewById(R.id.next_btn);
+        nextBtn.setOnClickListener(this);
+        skipBtn = findViewById(R.id.next_skip);
+        skipBtn.setOnClickListener(this);
+    }
+
+    private void initViewPager() {
+        mStepperIndicator = findViewById(R.id.intro_stepper);
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
             }
 
-
             @Override
             public void onPageSelected(int i) {
                 String btnText = "Next";
-                if(i==2) {
+                if (i == 2) {
                     btnText = "Finish";
                 }
                 nextBtn.setText(btnText);
@@ -74,36 +83,17 @@ public class TutorialAvtivity extends AppCompatActivity {
 
             }
         });
-
-
-
         mStepperIndicator.setViewPager(mViewPager, mSectionsPagerAdapter.getCount());
-
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.next_btn:
-                        onNextClick();
-                        mSharedPreferences.edit().putBoolean("tutorial",true).apply();
-                        Intent intent = new Intent(v.getContext(), MainActivity.class);
-                        v.getContext().startActivity(intent);
-                        finish();
-                        break;
-                }
-            }
-        });
-
+    }
+    private boolean isFirstLaunch() {
+            return mSharedPreferences.getBoolean(PREF_FIRST_LAUNCH, true);
     }
 
-    private void onNextClick() {
-        if(mViewPager.getCurrentItem()==mSectionsPagerAdapter.getCount()-1){
-        finish();
-    } else {
-        mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1);
+    private void firstLaunch() {
+        mSharedPreferences.edit()
+                .putBoolean(PREF_FIRST_LAUNCH, false)
+                .apply();
     }
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,11 +107,33 @@ public class TutorialAvtivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void onNextClick() {
+        if(mViewPager.getCurrentItem()==mSectionsPagerAdapter.getCount()-1){
+            MainActivity.start(this);
+            finish();
+        }else{
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1);
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.next_btn:
+                onNextClick();
+                break;
+            case R.id.next_skip:
+                MainActivity.start(this);
+                finish();
+        }
+    }
+
     public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
         }
-
 
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
@@ -178,4 +190,6 @@ public class TutorialAvtivity extends AppCompatActivity {
             return 3;
         }
     }
+
+
 }
